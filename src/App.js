@@ -12,6 +12,8 @@ const candyColors = [
 
 const App = () => {
     const [currentColorArray, setCurrentColorArray] = useState([]);
+    const [squareDrag, setSquareDrag] = useState(null);
+    const [squareReplace, setSquareReplace] = useState(null);
 
     const array = () => {
         const colorArray = []
@@ -21,7 +23,6 @@ const App = () => {
         }
         setCurrentColorArray(colorArray)
     }
-
     const rowOfFour = () => {
         for (let i = 0; i < currentColorArray.length; i++) {
             const rowOfFour = [i, i + 1, i + 2, i + 3]
@@ -32,31 +33,29 @@ const App = () => {
 
             if (rowOfFour.every(item => currentColorArray[item] === decidedColor)) {
                 rowOfFour.forEach(el => {
-                    currentColorArray[el] = ''
+                    currentColorArray[el] = 'white'
                 })
             }
         }
     }
-
     const colorOfFour = () => {
-        for (let i = 0; i < currentColorArray.length; i++) {
+        for (let i = 0; i <= 39; i++) {
             const columnOfFour = [i, i + width, i + width * 2, i + width * 3]
             const decidedColor = currentColorArray[i]
             if (columnOfFour.every(item => currentColorArray[item] === decidedColor)) {
                 columnOfFour.forEach(el => {
-                    currentColorArray[el] = ''
+                    currentColorArray[el] = 'white'
                 })
             }
         }
     }
     const colorOfThree = () => {
-        for (let i = 0; i < currentColorArray.length; i++) {
+        for (let i = 0; i <= 47; i++) {
             const columnOfThree = [i, i + width, i + width * 2]
             const decidedColor = currentColorArray[i]
             if (columnOfThree.every(item => currentColorArray[item] === decidedColor)) {
-                console.log(currentColorArray)
                 columnOfThree.forEach(el => {
-                    currentColorArray[el] = ''
+                    currentColorArray[el] = 'white'
                 })
             }
         }
@@ -71,29 +70,43 @@ const App = () => {
 
             if (rowOfThree.every(item => currentColorArray[item] === decidedColor)) {
                 rowOfThree.forEach(el => {
-                    currentColorArray[el] = ''
+                    currentColorArray[el] = 'white'
                 })
             }
         }
     }
-
     const moveIntoSquare = () => {
-        for (let i = 0; i < 64 - width; i++) {
+        for (let i = 0; i <= 64 - width; i++) {
             const firstRow = [0,1,2,3,4,5,6,7]
             const isFirstRow = firstRow.includes(i)
 
-            if (isFirstRow && currentColorArray[i] === '') {
+            if (isFirstRow && currentColorArray[i] === 'white') {
                   let randomNumber = Math.floor(Math.random() * candyColors.length)
                     currentColorArray[i] = candyColors[randomNumber]
             }
 
-            if ((currentColorArray[i + width]) === '') {
+            if ((currentColorArray[i + width]) === 'white') {
                 currentColorArray[i + width] = currentColorArray[i]
-                currentColorArray[i] = ''
+                currentColorArray[i] = 'white'
             }
         }
     }
 
+    const dragStart = (e) => {
+        setSquareDrag(e.target)
+    }
+    const dragDrop = (e) => {
+        setSquareReplace(e.target)
+    }
+    const dragEnd = (e) => {
+        const squareStartById = parseInt(squareDrag.getAttribute('data-id'))
+        const squareReplaceById = parseInt(squareReplace.getAttribute('data-id'))
+
+        currentColorArray[squareReplaceById] =  squareDrag.style.backgroundColor
+        currentColorArray[squareStartById] =  squareReplace.style.backgroundColor
+        console.log(squareReplaceById)
+        console.log(squareStartById)
+    }
 
 
     useEffect(() => {
@@ -116,11 +129,21 @@ const App = () => {
     return (
         <section className='flex'>
             <div className='game'>
-                {currentColorArray?.map((square , i) => {
-                    return (
-                        <div key={i} style={{backgroundColor: square}}> </div>
-                    )
-                })}
+                {currentColorArray?.map((square , i) => (
+                    <div
+                        data-id={i}
+                        draggable={true}
+                        onDragStart={dragStart}
+                        onDragOver={(e) =>  e.preventDefault()}
+                        onDragEnter={(e) =>  e.preventDefault()}
+                        onDragLeave={(e) =>  e.preventDefault()}
+                        onDrop={dragDrop}
+                        onDragEnd={dragEnd}
+                        key={i}
+                        style={{backgroundColor: square}}
+                    >
+                    </div>
+                ))}
             </div>
         </section>
     )
