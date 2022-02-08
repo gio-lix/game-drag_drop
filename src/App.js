@@ -118,9 +118,7 @@ const App = () => {
             <div className='game'>
                 {currentColorArray?.map((square , i) => {
                     return (
-                        <div key={i} style={{backgroundColor: square}}>
-
-                        </div>
+                        <div key={i} style={{backgroundColor: square}}> </div>
                     )
                 })}
             </div>
