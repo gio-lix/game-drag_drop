@@ -35,6 +35,7 @@ const App = () => {
                 rowOfFour.forEach(el => {
                     currentColorArray[el] = 'white'
                 })
+                return true
             }
         }
     }
@@ -46,6 +47,7 @@ const App = () => {
                 columnOfFour.forEach(el => {
                     currentColorArray[el] = 'white'
                 })
+                return true
             }
         }
     }
@@ -57,6 +59,7 @@ const App = () => {
                 columnOfThree.forEach(el => {
                     currentColorArray[el] = 'white'
                 })
+                return true
             }
         }
     }
@@ -72,6 +75,7 @@ const App = () => {
                 rowOfThree.forEach(el => {
                     currentColorArray[el] = 'white'
                 })
+                return true
             }
         }
     }
@@ -104,8 +108,29 @@ const App = () => {
 
         currentColorArray[squareReplaceById] =  squareDrag.style.backgroundColor
         currentColorArray[squareStartById] =  squareReplace.style.backgroundColor
-        console.log(squareReplaceById)
-        console.log(squareStartById)
+
+        const validMoves = [
+            squareStartById - 1,
+            squareStartById - width,
+            squareStartById + 1,
+            squareStartById + width
+        ]
+        const validMove = validMoves.includes(squareReplaceById)
+
+
+        const isRowFour = rowOfFour()
+        const isColumnFour = colorOfFour()
+        const isColumnThree = colorOfThree()
+        const isRowThree = rowOfThree()
+
+        if (squareStartById && validMove && (isRowFour || isColumnFour || isColumnThree || isRowThree)) {
+            setSquareDrag(null)
+            setSquareReplace(null)
+        } else {
+            currentColorArray[squareReplaceById] =  squareReplace.style.backgroundColor
+            currentColorArray[squareStartById] = squareDrag.style.backgroundColor
+            setCurrentColorArray([...currentColorArray])
+        }
     }
 
 
@@ -121,7 +146,7 @@ const App = () => {
             rowOfThree()
             moveIntoSquare()
             setCurrentColorArray([...currentColorArray])
-        }, 300)
+        }, 200)
         return () => clearInterval(item)
     }, [colorOfFour,rowOfFour,colorOfThree,rowOfThree,moveIntoSquare, currentColorArray]);
 
