@@ -1,4 +1,5 @@
 import {useEffect, useLayoutEffect, useState} from "react";
+import ScoreBoard from "./components/ScoreBoard";
 
 const width = 8
 const candyColors = [
@@ -14,6 +15,7 @@ const App = () => {
     const [currentColorArray, setCurrentColorArray] = useState([]);
     const [squareDrag, setSquareDrag] = useState(null);
     const [squareReplace, setSquareReplace] = useState(null);
+    const [score, setScore] = useState(0);
 
     const array = () => {
         const colorArray = []
@@ -30,8 +32,8 @@ const App = () => {
             const decidedColor = currentColorArray[i]
 
             if (notValid.includes(i)) continue
-
             if (rowOfFour.every(item => currentColorArray[item] === decidedColor)) {
+                setScore(pre => pre + 4)
                 rowOfFour.forEach(el => {
                     currentColorArray[el] = 'white'
                 })
@@ -40,10 +42,12 @@ const App = () => {
         }
     }
     const colorOfFour = () => {
+
         for (let i = 0; i <= 39; i++) {
             const columnOfFour = [i, i + width, i + width * 2, i + width * 3]
             const decidedColor = currentColorArray[i]
             if (columnOfFour.every(item => currentColorArray[item] === decidedColor)) {
+                setScore(pre => pre + 4)
                 columnOfFour.forEach(el => {
                     currentColorArray[el] = 'white'
                 })
@@ -56,6 +60,7 @@ const App = () => {
             const columnOfThree = [i, i + width, i + width * 2]
             const decidedColor = currentColorArray[i]
             if (columnOfThree.every(item => currentColorArray[item] === decidedColor)) {
+                setScore(pre => pre + 3)
                 columnOfThree.forEach(el => {
                     currentColorArray[el] = 'white'
                 })
@@ -72,6 +77,7 @@ const App = () => {
             if (notValid.includes(i)) continue
 
             if (rowOfThree.every(item => currentColorArray[item] === decidedColor)) {
+                setScore(pre => pre + 3)
                 rowOfThree.forEach(el => {
                     currentColorArray[el] = 'white'
                 })
@@ -153,6 +159,7 @@ const App = () => {
 
     return (
         <section className='flex'>
+            <ScoreBoard score={score} />
             <div className='game'>
                 {currentColorArray?.map((square , i) => (
                     <div
